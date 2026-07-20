@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police File Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Case File Generator</h1>
+            <div class="button-group">
+                <button id="btn-missing" class="active">Missing File</button>
+                <button id="btn-ud">UD File</button>
+            </div>
+        </header>
+
+        <form id="missing-form">
+            <h2>Missing Person Details</h2>
+
+            <div class="grid-layout">
+                <!-- 1. Image -->
+                <div class="form-group full-width">
+                    <label>1. Passport Size Image</label>
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <input type="file" id="image" accept="image/*" style="flex: 1;">
+                        <img id="image-preview" style="display: none; max-height: 100px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Image Preview">
+                    </div>
+                </div>
+
+                <!-- 2 & 3. PS & District -->
+                <div class="form-group">
+                    <label>2. Police Station</label>
+                    <input type="text" id="ps" placeholder="PS Name">
+                </div>
+                <div class="form-group">
+                    <label>3. District or Commissionerate</label>
+                    <div class="multi-input">
+                        <select id="pd-type">
+                            <option value="Police District">District</option>
+                            <option value="Police Commissionerate">Commissionerate</option>
+                        </select>
+                        <input type="text" id="pd-name" placeholder="Name">
+                    </div>
+                </div>
+
+                <!-- 4 & 5. GDE & Case No -->
+                <div class="form-group multi-input">
+                    <label>4. GDE No. & Date</label>
+                    <input type="text" id="gde-no" placeholder="GDE No.">
+                    <input type="date" id="gde-date">
+                </div>
+                <div class="form-group multi-input">
+                    <label>5. Case No., Date & Under Section : U/S 137(2)/140(3)/3(5) BNS</label>
+                    <input type="text" id="case-no" placeholder="Case No.">
+                    <input type="date" id="case-date">
+                    <input type="text" id="case-section" placeholder="Under section">
+                </div>
+
+                <!-- 6, 7, 8. Names -->
+                <div class="form-group">
+                    <label>6. Missing Name</label>
+                    <input type="text" id="missing-name" placeholder="Missing persons name">
+                </div>
+                <div class="form-group">
+                    <label>7. Alias</label>
+                    <input type="text" id="alias">
+                </div>
+                <div class="form-group">
+                    <label>8. Nick Name</label>
+                    <input type="text" id="nickname">
+                </div>
+
+                <!-- 9. Guardian -->
+                <div class="form-group">
+                    <label>9. Guardian Type & Name</label>
+                    <div class="multi-input">
+                        <select id="guardian-type">
+                            <option value="Father's Name">Father</option>
+                            <option value="Husband's Name">Husband</option>
+                        </select>
+                        <input type="text" id="guardian-name" placeholder="Name">
+                    </div>
+                </div>
+
+                <!-- 10. Address -->
+                <div class="form-group full-width">
+                    <label>10. Address (Vill- , PO- , PS- , Dist- )</label>
+                    <textarea id="address" rows="2"></textarea>
+                </div>
+
+                <!-- 11, 12, 13. Missing Event Info -->
+                <div class="form-group">
+                    <label>11. Date of Missing</label>
+                    <input type="date" id="missing-date">
+                </div>
+                <div class="form-group">
+                    <label>12. Time of Missing ( 07:15 )</label>
+                    <input type="text" id="missing-time" placeholder="">
+                </div>
+                <!-- <div class="form-group full-width">
+                    <label>13. Place of Missing</label>
+                    <input type="text" id="missing-place">
+                </div> -->
+
+                <!-- 14, 15, 16. Physical Basic -->
+                <div class="form-group">
+                    <label>13. Age</label>
+                    <div class="multi-input">
+                        <input type="number" id="age-year" placeholder="Years" min="0">
+                        <input type="number" id="age-month" placeholder="Months" min="0" max="11">
+                    </div>
+                </div>
+                <div class="form-group radio-group">
+                    <label>14. Sex</label>
+                    <label><input type="radio" name="sex" value="Male" checked> Male</label>
+                    <label><input type="radio" name="sex" value="Female"> Female</label>
+                </div>
+                <div class="form-group">
+                    <label>15. Height</label>
+                    <div class="multi-input">
+                        <input type="number" id="height-feet" placeholder="Feet" min="0">
+                        <input type="number" id="height-inch" placeholder="Inch" min="0" max="11">
+                    </div>
+                </div>
+
+                <!-- 17, 18. -->
+                <div class="form-group radio-group full-width">
+                    <label>16. Complexion</label>
+                    <label><input type="radio" name="complexion" value="Fair" checked> Fair</label>
+                    <label><input type="radio" name="complexion" value="Shallow"> Shallow</label>
+                    <label><input type="radio" name="complexion" value="Black"> Black</label>
+                </div>
+                <div class="form-group">
+                    <label>17. Mother Tongue</label>
+                    <select id="language">
+                        <option value="">Select Language...</option>
+                        <option value="Bengali">Bengali</option>
+                        <option value="Hindi">Hindi</option>
+                        <option value="English">English</option>
+                    </select>
+                </div>
+
+                <!-- 19, 20. -->
+                <div class="form-group radio-group full-width">
+                    <label>18. Build</label>
+                    <label><input type="radio" name="build" value="Healthy" checked> Healthy</label>
+                    <label><input type="radio" name="build" value="Medium"> Medium</label>
+                    <label><input type="radio" name="build" value="Thin"> Thin</label>
+                </div>
+                <div class="form-group">
+                    <label>19. Eyes</label>
+                    <input type="text" id="eyes" placeholder="e.g. Black">
+                </div>
+
+                <!-- 21, 22. -->
+                <div class="form-group radio-group full-width">
+                    <label>20. Hair</label>
+                    <label><input type="radio" name="hair" value="Black" checked> Black</label>
+                    <label><input type="radio" name="hair" value="White"> White</label>
+                    <label><input type="radio" name="hair" value="Black & White"> Black & White</label>
+                </div>
+                <div class="form-group radio-group">
+                    <label>21. Mentally Challenged?</label>
+                    <label><input type="radio" name="mental" value="Yes"> Yes</label>
+                    <label><input type="radio" name="mental" value="No" checked> No</label>
+                </div>
+
+                <!-- 23. -->
+                <div class="form-group full-width">
+                    <label>22. Wearing Apparels</label>
+                    <input type="text" id="apparel">
+                </div>
+
+                 <!-- 24. -->
+                <div class="form-group full-width">
+                    <label>23. Special I'D Marks</label>
+                    <input type="text" id="special-marks">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Generate Files</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

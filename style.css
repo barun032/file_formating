@@ -1,0 +1,229 @@
+/* Import a clean modern font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #eef2f6; /* Soft blue-gray background */
+    color: #334155;
+    padding: 30px 15px;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Header & Tabs --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 24px;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.button-group {
+    display: flex;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.button-group button {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    font-weight: 600;
+    font-size: 14px;
+    color: #64748b;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.button-group button.active {
+    background: #ffffff;
+    color: #0ea5e9; /* Police blue */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* --- Form Typography --- */
+h2 {
+    font-size: 18px;
+    color: #1e293b;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #0ea5e9;
+    padding-left: 10px;
+}
+
+label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* --- Layout --- */
+.grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+/* --- Inputs --- */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1e293b;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+input::placeholder {
+    color: #94a3b8;
+}
+
+/* Focus Glow Effect */
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.multi-input {
+    display: flex;
+    gap: 10px;
+}
+
+/* Custom File Input Styling */
+input[type="file"] {
+    padding: 8px;
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    cursor: pointer;
+}
+
+/* --- Radio Buttons --- */
+.radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.radio-group label {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0;
+    cursor: pointer;
+    font-size: 14px;
+    color: #334155;
+}
+
+input[type="radio"] {
+    accent-color: #0ea5e9; /* Modern blue radio dots */
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* --- Submit Button --- */
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    margin-top: 30px;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .grid-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+
+    .multi-input {
+        flex-direction: column;
+    }
+}
