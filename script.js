@@ -548,6 +548,7 @@ function generateTemplate4(data, imgBase64) {
                 </tr>
                 <tr><td>&#9679; ${data.guardianType}</td><td>:</td><td>${data.guardianName}</td></tr>
                 <tr><td valign="top">&#9679; Address</td><td valign="top">:</td><td>${data.address}</td></tr>
+                <tr><td>&#9679; Date of Missing</td><td>:</td><td>${data.missingDate}</td></tr>
                 <tr><td>&#9679; Age</td><td>:</td><td>${data.age}</td></tr>
                 <tr><td>&#9679; Sex</td><td>:</td><td>${data.sex}</td></tr>
                 <tr><td>&#9679; Height</td><td>:</td><td>${data.height}</td></tr>
