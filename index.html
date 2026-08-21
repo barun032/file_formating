@@ -184,9 +184,125 @@
 
             <button type="submit" class="submit-btn">Generate Files</button>
         </form>
+
+
+        <form id="ud-form" style="display: none;">
+            <h2>Unidentified Dead Body Details</h2>
+
+            <div class="grid-layout">
+                <!-- 1. Image -->
+                <div class="form-group full-width">
+                    <label>1. Deadbody Image</label>
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <input type="file" id="ud-image" accept="image/*" style="flex: 1;">
+                        <img id="ud-image-preview" style="display: none; max-height: 100px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Image Preview">
+                    </div>
+                </div>
+
+                <!-- 2 & 3. PS & District -->
+                <div class="form-group">
+                    <label>2. Police Station / GRPS</label>
+                    <input type="text" id="ud-ps" placeholder="Burdwan GRPS">
+                </div>
+                <div class="form-group">
+                    <label>3. District or Commissionerate</label>
+                    <div class="multi-input">
+                        <select id="ud-pd-type">
+                             <option value="GRP" selected>GRP</option>
+                            <option value="Police District">District</option>
+                            <option value="Police Commissionerate">Commissionerate</option>
+                        </select>
+                        <input type="text" id="ud-pd-name" placeholder="Howrah">
+                    </div>
+                </div>
+
+                <!-- 4. UD Case No -->
+                <div class="form-group multi-input full-width">
+                    <label>4. U/D Case No. & Date</label>
+                    <input type="text" id="ud-case-no" placeholder="">
+                    <input type="date" id="ud-case-date">
+                </div>
+
+                <!-- 5, 6, 7. Tracing Event Info -->
+                <div class="form-group">
+                    <label>5. Date of Tracing</label>
+                    <input type="date" id="ud-tracing-date">
+                </div>
+                <div class="form-group">
+                    <label>6. Time of Tracing ( 21:05 )</label>
+                    <input type="text" id="ud-tracing-time" placeholder="">
+                </div>
+                <div class="form-group full-width">
+                    <label>7. Place of Tracing</label>
+                    <textarea id="ud-tracing-place" rows="2" placeholder=""></textarea>
+                </div>
+
+                <!-- 8, 9, 10. Physical Basic -->
+                <div class="form-group">
+                    <label>8. Age (Approx)</label>
+                    <input type="number" id="ud-age-year" placeholder="Years" min="0">
+                </div>
+                <div class="form-group radio-group">
+                    <label>9. Sex</label>
+                    <label><input type="radio" name="ud-sex" value="Male" checked> Male</label>
+                    <label><input type="radio" name="ud-sex" value="Female"> Female</label>
+                </div>
+                <div class="form-group">
+                    <label>10. Height (Approx)</label>
+                    <div class="multi-input">
+                        <input type="number" id="ud-height-feet" placeholder="Feet" min="0">
+                        <input type="number" id="ud-height-inch" placeholder="Inch" min="0" max="11">
+                    </div>
+                </div>
+
+                <!-- 11, 12. Build & Complexion -->
+                <div class="form-group radio-group full-width">
+                    <label>11. Complexion</label>
+                    <label><input type="radio" name="ud-complexion" value="Fair"> Fair</label>
+                    <label><input type="radio" name="ud-complexion" value="Sallow" checked> Sallow</label>
+                    <label><input type="radio" name="ud-complexion" value="Black"> Black</label>
+                </div>
+                <div class="form-group radio-group full-width">
+                    <label>12. Build</label>
+                    <label><input type="radio" name="ud-build" value="Healthy"> Healthy</label>
+                    <label><input type="radio" name="ud-build" value="Medium" checked> Medium</label>
+                    <label><input type="radio" name="ud-build" value="Thin"> Thin</label>
+                </div>
+
+                <!-- 13, 14. Eyes & Hair -->
+                <div class="form-group">
+                    <label>13. Eyes</label>
+                    <input type="text" id="ud-eyes" placeholder="e.g. Black">
+                </div>
+                <div class="form-group radio-group">
+                    <label>14. Hair</label>
+                    <label><input type="radio" name="ud-hair" value="Black" checked> Black</label>
+                    <label><input type="radio" name="ud-hair" value="White"> White</label>
+                    <label><input type="radio" name="ud-hair" value="Black & White"> Black & White</label>
+                </div>
+
+                <!-- 15, 16, 17. Apparels & Marks -->
+                <div class="form-group full-width">
+                    <label>15. Special I'D Marks (Leave blank for NIL)</label>
+                    <input type="text" id="ud-special-marks" placeholder="e.g. A mole on right cheek">
+                </div>
+                <div class="form-group full-width">
+                    <label>16. Wearing Apparels</label>
+                    <textarea id="ud-apparel" rows="2" placeholder=""></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label>17. Any Other Information</label>
+                    <textarea id="ud-other-info" rows="2" placeholder="Any additional notes..."></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Generate UD Files</button>
+        </form>
     </div>
 
-    <script src="script.js"></script>
+    <script src="common.js"></script>
+    <script src="missing.js"></script>
+    <script src="ud.js"></script>
 </body>
 
 </html>
