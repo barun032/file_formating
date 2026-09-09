@@ -56,7 +56,7 @@ document.getElementById('ud-form').addEventListener('submit', async function (e)
     const pageBreak = `<br clear="all" style="page-break-before:always" />`;
     const combinedHtml = page1 + pageBreak + page2;
 
-    exportToWord(combinedHtml, `UD_Case_${data.caseNo.replace(/\//g, '-')}`);
+    exportToWord(combinedHtml, `${data.ps} UD Case ${data.caseNo.replace(/\//g, '-')}`);
 });
 
 // UD Format 1: Director of Information
