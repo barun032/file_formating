@@ -27,7 +27,9 @@
                     <label>1. Passport Size Image</label>
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <input type="file" id="image" accept="image/*" style="flex: 1;">
-                        <img id="image-preview" style="display: none; max-height: 100px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Image Preview">
+                        <img id="image-preview"
+                            style="display: none; max-height: 100px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                            alt="Image Preview">
                     </div>
                 </div>
 
@@ -175,7 +177,7 @@
                     <input type="text" id="apparel">
                 </div>
 
-                 <!-- 24. -->
+                <!-- 24. -->
                 <div class="form-group full-width">
                     <label>23. Special I'D Marks</label>
                     <input type="text" id="special-marks">
@@ -195,7 +197,9 @@
                     <label>1. Deadbody Image</label>
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <input type="file" id="ud-image" accept="image/*" style="flex: 1;">
-                        <img id="ud-image-preview" style="display: none; max-height: 100px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Image Preview">
+                        <img id="ud-image-preview"
+                            style="display: none; max-height: 100px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                            alt="Image Preview">
                     </div>
                 </div>
 
@@ -208,7 +212,7 @@
                     <label>3. District or Commissionerate</label>
                     <div class="multi-input">
                         <select id="ud-pd-type">
-                             <option value="GRP" selected>GRP</option>
+                            <option value="GRP" selected>GRP</option>
                             <option value="Police District">District</option>
                             <option value="Police Commissionerate">Commissionerate</option>
                         </select>
@@ -300,6 +304,7 @@
         </form>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.min.js"></script>
     <script src="common.js"></script>
     <script src="missing.js"></script>
     <script src="ud.js"></script>
