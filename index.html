@@ -37,7 +37,7 @@
                 <!-- 2 & 3. PS & District -->
                 <div class="form-group">
                     <label>2. Police Station</label>
-                    <input type="text" id="ps" placeholder="PS Name">
+                    <input type="text" id="ps" placeholder="New Town">
                 </div>
                 <div class="form-group">
                     <label>3. District or Commissionerate</label>
@@ -46,21 +46,21 @@
                             <option value="Police District">District</option>
                             <option value="Police Commissionerate">Commissionerate</option>
                         </select>
-                        <input type="text" id="pd-name" placeholder="Name">
+                        <input type="text" id="pd-name" placeholder="Bidhannagar">
                     </div>
                 </div>
 
                 <!-- 4 & 5. GDE & Case No -->
                 <div class="form-group multi-input">
                     <label>4. GDE No. & Date</label>
-                    <input type="text" id="gde-no" placeholder="GDE No.">
+                    <input type="text" id="gde-no" placeholder="2352/26">
                     <input type="date" id="gde-date">
                 </div>
                 <div class="form-group multi-input">
                     <label>5. Case No., Date & Under Section : U/S 137(2)/140(3)/3(5) BNS</label>
-                    <input type="text" id="case-no" placeholder="Case No.">
+                    <input type="text" id="case-no" placeholder="215/26">
                     <input type="date" id="case-date">
-                    <input type="text" id="case-section" placeholder="Under section">
+                    <input type="text" id="case-section" placeholder="U/S 137(2)/140(3) BNS">
                 </div>
 
                 <!-- 6, 7, 8. Names -->
@@ -102,7 +102,7 @@
                 </div>
                 <div class="form-group">
                     <label>12. Time of Missing ( 07:15 )</label>
-                    <input type="text" id="missing-time" placeholder="">
+                    <input type="text" id="missing-time" placeholder="10:00">
                 </div>
 
                 <!-- 14, 15, 16. Physical Basic -->
@@ -130,11 +130,17 @@
                 <div class="form-group radio-group full-width">
                     <label>16. Complexion</label>
                     <label><input type="radio" name="complexion" value="Fair" checked> Fair</label>
-                    <label><input type="radio" name="complexion" value="Sallow"> Sallow</label>
+                    <label><input type="radio" name="complexion" value="Sallow" checked> Sallow</label>
                     <label><input type="radio" name="complexion" value="Black"> Black</label>
                 </div>
+                <div class="form-group radio-group full-width">
+                    <label>17. Build</label>
+                    <label><input type="radio" name="build" value="Healthy" checked> Healthy</label>
+                    <label><input type="radio" name="build" value="Medium" checked> Medium</label>
+                    <label><input type="radio" name="build" value="Thin"> Thin</label>
+                </div>
                 <div class="form-group">
-                    <label>17. Mother Tongue</label>
+                    <label>18. Mother Tongue</label>
                     <select id="language">
                         <option value="">Select Language...</option>
                         <option value="Bengali">Bengali</option>
@@ -144,12 +150,6 @@
                 </div>
 
                 <!-- 19, 20. -->
-                <div class="form-group radio-group full-width">
-                    <label>18. Build</label>
-                    <label><input type="radio" name="build" value="Healthy" checked> Healthy</label>
-                    <label><input type="radio" name="build" value="Medium"> Medium</label>
-                    <label><input type="radio" name="build" value="Thin"> Thin</label>
-                </div>
                 <div class="form-group">
                     <label>19. Eyes</label>
                     <input type="text" id="eyes" placeholder="e.g. Black">
@@ -224,7 +224,7 @@
                 <!-- 4. UD Case No -->
                 <div class="form-group multi-input full-width">
                     <label>4. U/D Case No. & Date</label>
-                    <input type="text" id="ud-case-no" placeholder="">
+                    <input type="text" id="ud-case-no" placeholder="235/26">
                     <input type="date" id="ud-case-date">
                 </div>
 
@@ -235,7 +235,7 @@
                 </div>
                 <div class="form-group">
                     <label>6. Time of Tracing ( 21:05 )</label>
-                    <input type="text" id="ud-tracing-time" placeholder="">
+                    <input type="text" id="ud-tracing-time" placeholder="18:00">
                 </div>
                 <div class="form-group full-width">
                     <label>7. Place of Tracing</label>
