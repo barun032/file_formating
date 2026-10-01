@@ -150,7 +150,7 @@ function generateTemplate1(data, imgBase64) {
                 <tr><td>${data.guardianType}</td><td>:</td><td>${data.guardianName}</td></tr>
                 <tr><td valign="top">Address</td><td valign="top">:</td><td>${data.address}</td></tr>
                 <tr><td>Date of Missing</td><td>:</td><td>${data.missingDate}</td></tr>
-                <tr><td>Time of Missing</td><td>:</td><td>${data.missingTime} hrs</td></tr>
+                <tr><td>Time of Missing</td><td>:</td>${data.missingTime ? `<td>${data.missingTime} hrs</td></tr>` : ''}
                 <tr><td valign="top">Place of Missing</td><td valign="top">:</td><td colspan="2">Residential area under ${data.ps} PS.</td></tr>
             </table>
             <p style="text-decoration: underline; font-weight: bold; margin-top: 15px;">Descriptive Roll:</p>
@@ -205,7 +205,7 @@ function generateTemplate2(data, imgBase64) {
                 <tr><td>${data.guardianType}</td><td>:</td><td>${data.guardianName}</td></tr>
                 <tr><td valign="top">Address</td><td valign="top">:</td><td>${data.address}</td></tr>
                 <tr><td>Date of Missing</td><td>:</td><td>${data.missingDate}</td></tr>
-                <tr><td>Time of Missing</td><td>:</td><td>${data.missingTime} hrs</td></tr>
+                <tr><td>Time of Missing</td><td>:</td>${data.missingTime ? `<td>${data.missingTime} hrs</td></tr>` : ''}
                 <tr><td valign="top">Place of Missing</td><td valign="top">:</td><td colspan="2">Residential area under ${data.ps} PS.</td></tr>
             </table>
             <p style="text-decoration: underline; font-weight: bold; margin-top: 15px;">Descriptive Roll:</p>
@@ -261,7 +261,7 @@ function generateTemplate3(data, imgBase64) {
                 <tr><td>${data.guardianType}</td><td>:</td><td>${data.guardianName}</td></tr>
                 <tr><td valign="top">Address</td><td valign="top">:</td><td>${data.address}</td></tr>
                 <tr><td>Date of Missing</td><td>:</td><td>${data.missingDate}</td></tr>
-                <tr><td>Time of Missing</td><td>:</td><td>${data.missingTime} hrs</td></tr>
+                <tr><td>Time of Missing</td><td>:</td>${data.missingTime ? `<td>${data.missingTime} hrs</td></tr>` : ''}
                 <tr><td valign="top">Place of Missing</td><td valign="top">:</td><td colspan="2">Residential area under ${data.ps} PS.</td></tr>
             </table>
             <p style="text-decoration: underline; font-weight: bold; margin-top: 15px;">Descriptive Roll:</p>

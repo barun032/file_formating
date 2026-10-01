@@ -2,7 +2,7 @@
 document.getElementById('ud-image').addEventListener('change', function (event) {
     const file = event.target.files[0];
     const preview = document.getElementById('ud-image-preview');
-    delete preview.dataset.savedBase64; 
+    delete preview.dataset.savedBase64;
 
     if (file) {
         const reader = new FileReader();
@@ -26,18 +26,19 @@ if (btnSaveUd) {
 
         const imageFile = document.getElementById('ud-image').files[0];
         const preview = document.getElementById('ud-image-preview');
-        let imageBase64 = preview.dataset.savedBase64 || ''; 
+        let imageBase64 = preview.dataset.savedBase64 || '';
 
         if (imageFile) {
             imageBase64 = await toBase64(imageFile);
             preview.dataset.savedBase64 = imageBase64;
         }
 
-        const caseNo = document.getElementById('ud-case-no').value || 'Unknown';
-       await saveFileRecord({
+        const ps = document.getElementById('ud-ps').value.trim() || 'UD';
+        const caseNo = document.getElementById('ud-case-no').value.trim() || 'Unknown';
+        saveFileRecord({
             id: idInput.value,
             type: 'ud',
-            title: `UD Case: ${caseNo}`,
+            title: `${ps} Case No-${caseNo}`,
             date: new Date().toLocaleString(),
             formData: serializeForm('ud-form'),
             imageBase64: imageBase64
@@ -75,8 +76,8 @@ document.getElementById('ud-form').addEventListener('submit', async function (e)
 
     const imageFile = document.getElementById('ud-image').files[0];
     const preview = document.getElementById('ud-image-preview');
-    let imageBase64 = preview.dataset.savedBase64 || ''; 
-    
+    let imageBase64 = preview.dataset.savedBase64 || '';
+
     if (imageFile) {
         imageBase64 = await toBase64(imageFile);
         preview.dataset.savedBase64 = imageBase64;
@@ -86,19 +87,19 @@ document.getElementById('ud-form').addEventListener('submit', async function (e)
     const idInput = document.getElementById('ud-record-id');
     if (!idInput.value) idInput.value = generateId();
 
-    await saveFileRecord({
+   await saveFileRecord({
         id: idInput.value,
         type: 'ud',
-        title: `UD Case: ${data.caseNo || 'Unknown'}`,
+        title: `${data.ps || 'UD'} Case No-${data.caseNo || 'Unknown'}`,
         date: new Date().toLocaleString(),
         formData: serializeForm('ud-form'),
         imageBase64: imageBase64
-    }, true); // suppress alert so it doesn't block the print dialog
+    }, true);
     // ------------------------------------------------
 
     const page1 = generateUdTemplate1(data, imageBase64);
     const page2 = generateUdTemplate2(data, imageBase64);
-    
+
     const pageBreak = `<div style="page-break-before: always; clear: both;"></div>`;
     const combinedHtml = page1 + pageBreak + page2;
 
@@ -135,7 +136,7 @@ function generateUdTemplate1(data, imgBase64) {
                 <tr><td>Father's/Husband's Name</td><td>:</td><td></td></tr>
                 <tr><td valign="top">Address</td><td valign="top">:</td><td></td></tr>
                 <tr><td>Date of Tracing</td><td>:</td><td>${data.tracingDate}</td></tr>
-                <tr><td>Time of Tracing</td><td>:</td><td>${data.tracingTime} hrs.</td></tr>
+                <tr><td>Time of Tracing</td><td>:</td>${data.tracingTime ? `<td>${data.tracingTime} hrs</td></tr>` : ''}
                 <tr><td valign="top">Place of Tracing</td><td valign="top">:</td><td colspan="2">${data.tracingPlace}</td></tr>
             </table>
             <p style="text-decoration: underline; font-weight: bold; margin-top: 10px;">Descriptive Roll:</p>

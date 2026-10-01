@@ -261,7 +261,7 @@ async function renderSavedFiles() {
         const badgeClass = isMissing ? 'badge-missing' : 'badge-ud';
         const badgeText = isMissing ? 'MP' : 'UD';
         const typeName = isMissing ? 'Missing Person' : 'Unidentified Body';
-        const rawTitle = (file.title || '').replace(/^(Missing:|UD Case:)\s*/i, '') || file.title || 'Untitled';
+        const rawTitle = (file.title || '').replace(/^Missing:\s*/i, '') || file.title || 'Untitled';
 
         return `
         <div class="saved-row">
