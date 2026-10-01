@@ -2,6 +2,7 @@
 document.getElementById('image').addEventListener('change', function (event) {
     const file = event.target.files[0];
     const preview = document.getElementById('image-preview');
+    delete preview.dataset.savedBase64; 
 
     if (file) {
         const reader = new FileReader();
@@ -16,7 +17,35 @@ document.getElementById('image').addEventListener('change', function (event) {
     }
 });
 
-// --- Missing Form Submit Handler ---
+// --- Save Missing Logic ---
+const btnSaveMissing = document.getElementById('btn-save-missing');
+if (btnSaveMissing) {
+    btnSaveMissing.addEventListener('click', async function () {
+        const idInput = document.getElementById('missing-record-id');
+        if (!idInput.value) idInput.value = generateId();
+
+        const imageFile = document.getElementById('image').files[0];
+        const preview = document.getElementById('image-preview');
+        let imageBase64 = preview.dataset.savedBase64 || ''; 
+
+        if (imageFile) {
+            imageBase64 = await toBase64(imageFile);
+            preview.dataset.savedBase64 = imageBase64; 
+        }
+
+        const name = document.getElementById('missing-name').value || 'Unknown';
+       await saveFileRecord({
+            id: idInput.value,
+            type: 'missing',
+            title: `Missing: ${name}`,
+            date: new Date().toLocaleString(),
+            formData: serializeForm('missing-form'),
+            imageBase64: imageBase64
+        });
+    });
+}
+
+// --- Missing Form Submit Handler (Saves AND Generates PDF) ---
 document.getElementById('missing-form').addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -34,6 +63,7 @@ document.getElementById('missing-form').addEventListener('submit', async functio
         nickname: document.getElementById('nickname').value,
         guardianType: document.getElementById('guardian-type').value,
         guardianName: document.getElementById('guardian-name').value,
+        extractedDistrict: extractDistrict(document.getElementById('address').value),
         address: document.getElementById('address').value,
         missingDate: formatDate(document.getElementById('missing-date').value),
         missingTime: document.getElementById('missing-time').value,
@@ -57,20 +87,36 @@ document.getElementById('missing-form').addEventListener('submit', async functio
     };
 
     const imageFile = document.getElementById('image').files[0];
-    let imageBase64 = '';
+    const preview = document.getElementById('image-preview');
+    let imageBase64 = preview.dataset.savedBase64 || ''; 
     if (imageFile) {
         imageBase64 = await toBase64(imageFile);
+        preview.dataset.savedBase64 = imageBase64;
     }
+
+    // ---- Auto-save to localStorage on Generate ----
+    const idInput = document.getElementById('missing-record-id');
+    if (!idInput.value) idInput.value = generateId();
+
+   await saveFileRecord({
+        id: idInput.value,
+        type: 'missing',
+        title: `Missing: ${data.name || 'Unknown'}`,
+        date: new Date().toLocaleString(),
+        formData: serializeForm('missing-form'),
+        imageBase64: imageBase64
+    }, true); // suppress alert so it doesn't block the print dialog
+    // ------------------------------------------------
 
     const page1 = generateTemplate1(data, imageBase64);
     const page2 = generateTemplate2(data, imageBase64);
     const page3 = generateTemplate3(data, imageBase64);
     const page4 = generateTemplate4(data, imageBase64);
 
-    const pageBreak = `<br clear="all" style="page-break-before:always" />`;
+    const pageBreak = `<div style="page-break-before: always; clear: both;"></div>`;
     const combinedHtml = page1 + pageBreak + page2 + pageBreak + page3 + pageBreak + page4;
 
-    exportToWord(combinedHtml, `${data.name}_${data.age}`);
+    exportToPdf(combinedHtml, `${data.name}_${data.age}`);
 });
 
 // Format 1: Director of Information
@@ -79,12 +125,12 @@ function generateTemplate1(data, imgBase64) {
     const caseOrGde = data.caseNo ? `Case NO.-${data.caseNo} Date-${data.caseDate} ${data.caseSection}` : `GDE NO.-${data.gdeNo} Date-${data.gdeDate}`;
 
     return `
-        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.15;">
+        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1;">
             <div style="text-align: center; font-weight: bold;">
                 Criminal Investigation Department<br>West Bengal<br>Bhabani Bhaban,<br>
                 31, Belvedere Road, Alipore<br>Kolkata-700 027
             </div>
-            <table width="100%" style="margin-top: 15px; margin-bottom: 15px;">
+            <table width="100%" style="margin-top: 10px; margin-bottom: 10px;">
                 <tr>
                     <td align="left">Memo No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /MPB/CID/WB</td>
                     <td align="right">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -116,7 +162,7 @@ function generateTemplate1(data, imgBase64) {
                 <tr><td>Mentally Challenge:</td><td>${data.mental}</td><td>Wearing Apparels:</td><td>${data.apparel}</td></tr>
                 <tr><td>Special I'd Mark:</td><td>${data.specialMarks}</td></tr>
             </table>
-            <p style="margin-top: 20px;">If traced, please contact:</p>
+            <p style="margin-top: 15px;">If traced, please contact:</p>
             <p style="margin-bottom: 30px;">
                 Officer in Charge<br>Missing Persons Bureau<br>CID, West Bengal<br>
                 Bhabani Bhaban, Kolkata - 700027<br>Phone No: 033-24506120
@@ -134,12 +180,12 @@ function generateTemplate2(data, imgBase64) {
     const caseOrGde = data.caseNo ? `Case No.-${data.caseNo} Date-${data.caseDate} ${data.caseSection}` : `GDE No.-${data.gdeNo} Date-${data.gdeDate}`;
 
     return `
-        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.15;">
+        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1;">
             <div style="text-align: center; font-weight: bold;">
                 Criminal Investigation Department<br>West Bengal<br>Bhabani Bhaban,<br>
                 31, Belvedere Road, Alipore<br>Kolkata-700 027
             </div>
-            <table width="100%" style="margin-top: 15px; margin-bottom: 15px;">
+            <table width="100%" style="margin-top: 10px; margin-bottom: 10px;">
                 <tr>
                     <td align="left">Memo No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /MPB/CID/WB</td>
                     <td align="right">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -171,7 +217,7 @@ function generateTemplate2(data, imgBase64) {
                 <tr><td>Mentally Challenge:</td><td>${data.mental}</td><td>Wearing Apparels:</td><td>${data.apparel}</td></tr>
                 <tr><td>Special I'd Mark:</td><td>${data.specialMarks}</td></tr>
             </table>
-            <p style="margin-top: 20px;">Any information or clues about the missing person, if available, may kindly be communicated to:</p>
+            <p style="margin-top: 10px;">Any information or clues about the missing person, if available, may kindly be communicated to:</p>
             <p style="margin-bottom: 30px;">
                 Officer in Charge<br>Missing Persons Bureau<br>CID, West Bengal<br>
                 Bhabani Bhaban, Kolkata - 700027<br>Phone No: 033-24506120<br>
@@ -190,12 +236,12 @@ function generateTemplate3(data, imgBase64) {
     const caseOrGde = data.caseNo ? `Case No.-${data.caseNo} Date-${data.caseDate} ${data.caseSection}` : `GDE No.-${data.gdeNo} Date-${data.gdeDate}`;
 
     return `
-        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.15;">
+        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1;">
             <div style="text-align: center; font-weight: bold;">
                 Criminal Investigation Department<br>West Bengal<br>Bhabani Bhaban,<br>
                 31, Belvedere Road, Alipore<br>Kolkata-700 027
             </div>
-            <table width="100%" style="margin-top: 15px; margin-bottom: 15px;">
+            <table width="100%" style="margin-top: 10px; margin-bottom: 10px;">
                 <tr>
                     <td align="left">Memo No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /MPB/CID/WB</td>
                     <td align="right">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -227,7 +273,7 @@ function generateTemplate3(data, imgBase64) {
                 <tr><td>Mentally Challenge:</td><td>${data.mental}</td><td>Wearing Apparels:</td><td>${data.apparel}</td></tr>
                 <tr><td>Special I'd Mark:</td><td>${data.specialMarks}</td></tr>
             </table>
-            <p style="margin-top: 20px;">Any information or clues about the missing person, if available, may kindly be communicated to:</p>
+            <p style="margin-top: 10px;">Any information or clues about the missing person, if available, may kindly be communicated to:</p>
             <p style="margin-bottom: 30px;">
                 Officer in-Charge<br>Missing Persons Bureau<br>CID, West Bengal<br>
                 Bhabani Bhaban, Kolkata-700027<br>Phone No.: 033-24506120<br>
@@ -242,17 +288,18 @@ function generateTemplate3(data, imgBase64) {
 
 // Format 4: Hue & Cry Notice
 function generateTemplate4(data, imgBase64) {
+    console.log(data.extractedDistrict)
     const imgTag = imgBase64 ? `<img src="${imgBase64}" width="120" height="150" style="background-color: #FFFFFF;" />` : '';
     const caseOrGde = data.caseNo ? `Case No.-${data.caseNo} Date-${data.caseDate} ${data.caseSection}` : `GDE No.-${data.gdeNo} Date-${data.gdeDate}`;
 
     return `
-        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.15;">
+        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1;">
             <div style="text-align: center; font-weight: bold;">
                 Criminal Investigation Department<br>West Bengal<br>Bhabani Bhaban,<br>
                 31, Belvedere Road, Alipore<br>Kolkata -700 027<br><br>
                 <span style="text-decoration: underline; font-size: 14pt;">Hue & Cry Notice</span>
             </div>
-            <table width="100%" style="margin-top: 15px; margin-bottom: 15px;">
+            <table width="100%" style="margin-top: 10px; margin-bottom: 10px;">
                 <tr>
                     <td align="left">Org. No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /MPB/CID/WB</td>
                     <td align="right">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -271,7 +318,7 @@ function generateTemplate4(data, imgBase64) {
                 <tr><td valign="top">Ref:</td><td>${data.ps} PS (${data.pdName} ${data.pdType}) ${caseOrGde}.</td></tr>
                 <tr><td valign="top">Sub:</td><td>Request for search for missing person.</td></tr>
             </table>
-            <p style="text-align: justify;">The following person has been reported missing from residential area under the jurisdiction of ${data.ps} PS, District - ${data.pdName}, West Bengal. The description of the missing person is as follows:</p>
+            <p style="text-align: justify;">The following person has been reported missing from residential area under the jurisdiction of ${data.ps} PS, District - ${data.extractedDistrict}, West Bengal. The description of the missing person is as follows:</p>
             <p style="text-decoration: underline; font-weight: bold;">Description of the Missing Person:</p>
             <table width="100%">
                 <tr><td width="35%">&#9679; Name</td><td width="5%">:</td><td width="40%">${data.name}</td><td rowspan="9" align="center" valign="top">${imgTag}</td></tr>
@@ -286,7 +333,7 @@ function generateTemplate4(data, imgBase64) {
                 <tr><td valign="top">&#9679; Wearing Apparels</td><td valign="top">:</td><td>${data.apparel}</td></tr>
                 <tr><td valign="top">&#9679; Special I'd Mark</td><td valign="top">:</td><td>${data. specialMarks}</td></tr>
             </table>
-            <p style="margin-top: 15px; text-align: justify;">You are requested to widely circulate the information regarding the missing person within your jurisdiction.<br> Any information or clues about the missing person, if available, may kindly be communicated to:</p>
+            <p style="margin-top: 10px; text-align: justify;">You are requested to widely circulate the information regarding the missing person within your jurisdiction.<br> Any information or clues about the missing person, if available, may kindly be communicated to:</p>
             <p style="margin-bottom: 30px;">
                 Officer in-Charge<br>Missing Persons Bureau<br>CID, West Bengal<br>
                 Bhabani Bhaban, Kolkata-700027<br>Phone No.: 033-24506120<br>

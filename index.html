@@ -15,6 +15,7 @@
             <div class="button-group">
                 <button id="btn-missing" class="active">Missing File</button>
                 <button id="btn-ud">UD File</button>
+                <button id="btn-saved">Saved Files</button>
             </div>
         </header>
 
@@ -103,10 +104,6 @@
                     <label>12. Time of Missing ( 07:15 )</label>
                     <input type="text" id="missing-time" placeholder="">
                 </div>
-                <!-- <div class="form-group full-width">
-                    <label>13. Place of Missing</label>
-                    <input type="text" id="missing-place">
-                </div> -->
 
                 <!-- 14, 15, 16. Physical Basic -->
                 <div class="form-group">
@@ -184,7 +181,11 @@
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Generate Files</button>
+            <input type="hidden" id="missing-record-id">
+            <div class="action-buttons">
+                <button type="button" id="btn-save-missing" class="submit-btn save-btn">Save File</button>
+                <button type="submit" class="submit-btn">Generate Files</button>
+            </div>
         </form>
 
 
@@ -300,8 +301,28 @@
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Generate UD Files</button>
+            <input type="hidden" id="ud-record-id">
+            <div class="action-buttons">
+                <button type="button" id="btn-save-ud" class="submit-btn save-btn">Save UD File</button>
+                <button type="submit" class="submit-btn">Generate UD Files</button>
+            </div>
         </form>
+
+        <div id="saved-files-section" style="display: none;">
+            <h2>Manage Saved Files</h2>
+
+            <div class="saved-toolbar">
+                <input type="search" id="saved-search" placeholder="Search name, PS, case no, district, alias...">
+                <select id="saved-filter-type">
+                    <option value="all">All Types</option>
+                    <option value="missing">Missing Person</option>
+                    <option value="ud">UD Case</option>
+                </select>
+            </div>
+
+            <div id="saved-count" class="saved-count"></div>
+            <div id="saved-files-list" class="saved-list"></div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.min.js"></script>

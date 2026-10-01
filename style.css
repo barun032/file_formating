@@ -227,3 +227,173 @@ input[type="radio"] {
         flex-direction: column;
     }
 }
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.action-buttons .submit-btn {
+    margin-top: 0;
+    flex: 1;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.save-btn:hover {
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* =====================================================================
+   SAVED FILES — Toolbar (search + filter)
+   ===================================================================== */
+.saved-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.saved-toolbar input[type="search"] {
+    flex: 1;
+    padding: 9px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #1e293b;
+    background: #ffffff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.saved-toolbar input[type="search"]:focus {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.saved-toolbar select {
+    width: auto;
+    min-width: 150px;
+    padding: 9px 12px;
+    font-size: 13px;
+}
+
+.saved-count {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+/* =====================================================================
+   SAVED FILES — Compact, scrollable list
+   ===================================================================== */
+.saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.saved-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 7px 10px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.saved-row:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.saved-row-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0; /* allows title truncation */
+}
+
+.saved-badge {
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.badge-missing { background: #dbeafe; color: #1d4ed8; }
+.badge-ud      { background: #fee2e2; color: #b91c1c; }
+
+.saved-row-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.saved-row-meta {
+    flex-shrink: 0;
+    font-size: 11px;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+.saved-row-actions {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.saved-row-actions .btn-action {
+    padding: 5px 9px;
+    font-size: 11px;
+    border-radius: 5px;
+    line-height: 1.2;
+}
+
+.empty-msg {
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* --- Action Buttons (shared) --- */
+.btn-action {
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-edit { background: #0ea5e9; }
+.btn-edit:hover { background: #0284c7; }
+.btn-duplicate { background: #8b5cf6; }
+.btn-duplicate:hover { background: #7c3aed; }
+.btn-delete { background: #ef4444; }
+.btn-delete:hover { background: #dc2626; }
+
+/* --- Mobile: Saved files --- */
+@media (max-width: 768px) {
+    .saved-toolbar { flex-direction: column; }
+    .saved-toolbar select { width: 100%; }
+    .saved-row { flex-direction: column; align-items: stretch; gap: 8px; }
+    .saved-row-main { flex-wrap: wrap; }
+    .saved-row-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+    .saved-row-actions .btn-action { padding: 7px; font-size: 12px; }
+}

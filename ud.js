@@ -2,6 +2,7 @@
 document.getElementById('ud-image').addEventListener('change', function (event) {
     const file = event.target.files[0];
     const preview = document.getElementById('ud-image-preview');
+    delete preview.dataset.savedBase64; 
 
     if (file) {
         const reader = new FileReader();
@@ -16,7 +17,35 @@ document.getElementById('ud-image').addEventListener('change', function (event) 
     }
 });
 
-// --- UD Form Submit Handler ---
+// --- Save UD Logic ---
+const btnSaveUd = document.getElementById('btn-save-ud');
+if (btnSaveUd) {
+    btnSaveUd.addEventListener('click', async function () {
+        const idInput = document.getElementById('ud-record-id');
+        if (!idInput.value) idInput.value = generateId();
+
+        const imageFile = document.getElementById('ud-image').files[0];
+        const preview = document.getElementById('ud-image-preview');
+        let imageBase64 = preview.dataset.savedBase64 || ''; 
+
+        if (imageFile) {
+            imageBase64 = await toBase64(imageFile);
+            preview.dataset.savedBase64 = imageBase64;
+        }
+
+        const caseNo = document.getElementById('ud-case-no').value || 'Unknown';
+       await saveFileRecord({
+            id: idInput.value,
+            type: 'ud',
+            title: `UD Case: ${caseNo}`,
+            date: new Date().toLocaleString(),
+            formData: serializeForm('ud-form'),
+            imageBase64: imageBase64
+        });
+    });
+}
+
+// --- UD Form Submit Handler (Saves AND Generates PDF) ---
 document.getElementById('ud-form').addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -45,18 +74,35 @@ document.getElementById('ud-form').addEventListener('submit', async function (e)
     };
 
     const imageFile = document.getElementById('ud-image').files[0];
-    let imageBase64 = '';
+    const preview = document.getElementById('ud-image-preview');
+    let imageBase64 = preview.dataset.savedBase64 || ''; 
+    
     if (imageFile) {
         imageBase64 = await toBase64(imageFile);
+        preview.dataset.savedBase64 = imageBase64;
     }
+
+    // ---- Auto-save to localStorage on Generate ----
+    const idInput = document.getElementById('ud-record-id');
+    if (!idInput.value) idInput.value = generateId();
+
+    await saveFileRecord({
+        id: idInput.value,
+        type: 'ud',
+        title: `UD Case: ${data.caseNo || 'Unknown'}`,
+        date: new Date().toLocaleString(),
+        formData: serializeForm('ud-form'),
+        imageBase64: imageBase64
+    }, true); // suppress alert so it doesn't block the print dialog
+    // ------------------------------------------------
 
     const page1 = generateUdTemplate1(data, imageBase64);
     const page2 = generateUdTemplate2(data, imageBase64);
     
-    const pageBreak = `<br clear="all" style="page-break-before:always" />`;
+    const pageBreak = `<div style="page-break-before: always; clear: both;"></div>`;
     const combinedHtml = page1 + pageBreak + page2;
 
-    exportToWord(combinedHtml, `${data.ps} UD Case ${data.caseNo.replace(/\//g, '-')}`);
+    exportToPdf(combinedHtml, `${data.ps} UD Case ${(data.caseNo || '').replace(/\//g, '-')}`);
 });
 
 // UD Format 1: Director of Information
@@ -64,12 +110,12 @@ function generateUdTemplate1(data, imgBase64) {
     const imgTag = imgBase64 ? `<img src="${imgBase64}" width="120" height="150" style="background-color: #FFFFFF;" />` : '';
 
     return `
-        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.15;">
+        <div style="font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1;">
             <div style="text-align: center; font-weight: bold;">
                 Criminal Investigation Department<br>West Bengal<br>Bhabani Bhaban,<br>
                 31, Belvedere Road, Alipore<br>Kolkata -700 027
             </div>
-            <table width="100%" style="margin-top: 15px; margin-bottom: 15px;">
+            <table width="100%" style="margin-top: 10px; margin-bottom: 10px;">
                 <tr>
                     <td align="left">Memo No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /MPB/CID/WB</td>
                     <td align="right">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -92,7 +138,7 @@ function generateUdTemplate1(data, imgBase64) {
                 <tr><td>Time of Tracing</td><td>:</td><td>${data.tracingTime} hrs.</td></tr>
                 <tr><td valign="top">Place of Tracing</td><td valign="top">:</td><td colspan="2">${data.tracingPlace}</td></tr>
             </table>
-            <p style="text-decoration: underline; font-weight: bold; margin-top: 15px;">Descriptive Roll:</p>
+            <p style="text-decoration: underline; font-weight: bold; margin-top: 10px;">Descriptive Roll:</p>
             <table width="100%">
                 <tr><td width="20%">Age:</td><td width="30%">${data.age}(Approx)</td><td width="20%">Sex:</td><td width="30%">${data.sex}</td></tr>
                 <tr><td>Height:</td><td>${data.height} (Approx)</td><td>Complexion:</td><td>${data.complexion}</td></tr>
@@ -101,7 +147,7 @@ function generateUdTemplate1(data, imgBase64) {
                 <tr><td>Mentally Challenge:</td><td></td><td valign="top">Wearing Apparels:</td><td valign="top">${data.apparel}</td></tr>
                 <tr><td valign="top">Any Other Information:</td><td colspan="3">${data.otherInfo}</td></tr>
             </table>
-            <p style="margin-top: 20px;">If identified, please contact:</p>
+            <p style="margin-top: 10px;">If identified, please contact:</p>
             <p style="margin-bottom: 30px;">
                 Officer in Charge<br>Missing Persons Bureau<br>CID, West Bengal<br>
                 Bhabani Bhaban, Kolkata - 700027<br>Phone No: 033-24506120
@@ -124,13 +170,13 @@ function generateUdTemplate2(data, imgBase64) {
                 31, Belvedere Road, Alipore<br>Kolkata -700 027
             </div>
              <p style="text-align: center; text-decoration: underline; font-weight: bold; font-size: 14pt; margin: 20px 0;">Hue & Cry Notice</p>
-            <table width="100%" style="margin-top: 15px; margin-bottom: 15px;">
+            <table width="100%" style="margin-top: 10px; margin-bottom: 10px;">
                 <tr>
                     <td align="left">Org. No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /MPB/CID/WB</td>
                     <td align="right">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 </tr>
             </table>
-            <table width="100%" style="margin-bottom: 15px;">
+            <table width="100%" style="margin-bottom: 10px;">
                 <tr>
                     <td width="8%" valign="top">To:</td>
                     <td width="92%" style="text-align: justify;">
@@ -157,7 +203,7 @@ function generateUdTemplate2(data, imgBase64) {
                 <tr><td valign="top">&#9679; Special I'D Mark</td><td valign="top">:</td><td>${data.specialMarks}</td></tr>
                 <tr><td valign="top">&#9679; Wearing Apparels</td><td valign="top">:</td><td>${data.apparel}</td></tr>
             </table>
-            <p style="margin-top: 15px; text-align: justify;">You are requested to widely circulate the information regarding the recovered unidentified dead body within your jurisdiction.<br> Any information or clues about the recovered unidentified dead body, if available, may kindly be communicated to:</p>
+            <p style="margin-top: 10px; text-align: justify;">You are requested to widely circulate the information regarding the recovered unidentified dead body within your jurisdiction.<br> Any information or clues about the recovered unidentified dead body, if available, may kindly be communicated to:</p>
             <p style="margin-bottom: 30px;">
                 Officer in-Charge<br>Missing Persons Bureau<br>Bhabani Bhaban, Kolkata-700027<br>
                 Phone No.: 033-24506120<br>Email: insp1mpbcid@policewb.gov.in
