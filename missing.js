@@ -2,7 +2,7 @@
 document.getElementById('image').addEventListener('change', function (event) {
     const file = event.target.files[0];
     const preview = document.getElementById('image-preview');
-    delete preview.dataset.savedBase64; 
+    delete preview.dataset.savedBase64;
 
     if (file) {
         const reader = new FileReader();
@@ -26,15 +26,15 @@ if (btnSaveMissing) {
 
         const imageFile = document.getElementById('image').files[0];
         const preview = document.getElementById('image-preview');
-        let imageBase64 = preview.dataset.savedBase64 || ''; 
+        let imageBase64 = preview.dataset.savedBase64 || '';
 
         if (imageFile) {
             imageBase64 = await toBase64(imageFile);
-            preview.dataset.savedBase64 = imageBase64; 
+            preview.dataset.savedBase64 = imageBase64;
         }
 
         const name = document.getElementById('missing-name').value || 'Unknown';
-       await saveFileRecord({
+        await saveFileRecord({
             id: idInput.value,
             type: 'missing',
             title: `Missing: ${name}`,
@@ -88,7 +88,7 @@ document.getElementById('missing-form').addEventListener('submit', async functio
 
     const imageFile = document.getElementById('image').files[0];
     const preview = document.getElementById('image-preview');
-    let imageBase64 = preview.dataset.savedBase64 || ''; 
+    let imageBase64 = preview.dataset.savedBase64 || '';
     if (imageFile) {
         imageBase64 = await toBase64(imageFile);
         preview.dataset.savedBase64 = imageBase64;
@@ -98,7 +98,7 @@ document.getElementById('missing-form').addEventListener('submit', async functio
     const idInput = document.getElementById('missing-record-id');
     if (!idInput.value) idInput.value = generateId();
 
-   await saveFileRecord({
+    await saveFileRecord({
         id: idInput.value,
         type: 'missing',
         title: `Missing: ${data.name || 'Unknown'}`,
@@ -116,8 +116,12 @@ document.getElementById('missing-form').addEventListener('submit', async functio
     const pageBreak = `<div style="page-break-before: always; clear: both;"></div>`;
     const combinedHtml = page1 + pageBreak + page2 + pageBreak + page3 + pageBreak + page4;
 
-    exportToPdf(combinedHtml, `${data.name}_${data.age}`);
+    await exportToPdf(combinedHtml, `${data.name}_${data.age}`);
+
+    // Print dialog closed → start fresh for the next case
+    resetFormAndPreview(document.getElementById('missing-form'));
 });
+
 
 // Format 1: Director of Information
 function generateTemplate1(data, imgBase64) {
@@ -331,7 +335,7 @@ function generateTemplate4(data, imgBase64) {
                 <tr><td>&#9679; Complexion</td><td>:</td><td>${data.complexion}</td></tr>
                 <tr><td>&#9679; Build</td><td>:</td><td>${data.build}</td></tr>
                 <tr><td valign="top">&#9679; Wearing Apparels</td><td valign="top">:</td><td>${data.apparel}</td></tr>
-                <tr><td valign="top">&#9679; Special I'd Mark</td><td valign="top">:</td><td>${data. specialMarks}</td></tr>
+                <tr><td valign="top">&#9679; Special I'd Mark</td><td valign="top">:</td><td>${data.specialMarks}</td></tr>
             </table>
             <p style="margin-top: 10px; text-align: justify;">You are requested to widely circulate the information regarding the missing person within your jurisdiction.<br> Any information or clues about the missing person, if available, may kindly be communicated to:</p>
             <p style="margin-bottom: 30px;">

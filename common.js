@@ -438,16 +438,18 @@ function extractDistrict(addressStr) {
 //  PDF EXPORT
 // =====================================================================
 function exportToPdf(htmlContent, filename) {
-    if (!htmlContent || !htmlContent.trim()) {
-        alert('Nothing to export.');
-        return;
-    }
+    return new Promise((resolve) => {
+        if (!htmlContent || !htmlContent.trim()) {
+            alert('Nothing to export.');
+            resolve();
+            return;
+        }
 
-    const pageBreakRegex = /<div style="page-break-before:\s*always;\s*clear:\s*both;"><\/div>/i;
-    const pages = htmlContent.split(pageBreakRegex).map(p => p.trim()).filter(Boolean);
-    const pageHtml = pages.map(p => `<div class="page">${p}</div>`).join('');
+        const pageBreakRegex = /<div style="page-break-before:\s*always;\s*clear:\s*both;"><\/div>/i;
+        const pages = htmlContent.split(pageBreakRegex).map(p => p.trim()).filter(Boolean);
+        const pageHtml = pages.map(p => `<div class="page">${p}</div>`).join('');
 
-    const fullHtml = `<!DOCTYPE html>
+        const fullHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -468,38 +470,53 @@ function exportToPdf(htmlContent, filename) {
 <body>${pageHtml}</body>
 </html>`;
 
-    const iframe = document.createElement('iframe');
-    Object.assign(iframe.style, {
-        position: 'fixed', right: '0', bottom: '0', width: '0', height: '0', border: '0', visibility: 'hidden'
-    });
-    document.body.appendChild(iframe);
-
-    const blob = new Blob([fullHtml], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-
-    iframe.onload = () => {
-        const doc = iframe.contentWindow.document;
-        const imgs = Array.from(doc.querySelectorAll('img'));
-        Promise.all(imgs.map(img =>
-            img.complete ? Promise.resolve() : new Promise(res => { img.onload = img.onerror = res; })
-        )).then(() => {
-            setTimeout(() => {
-                try {
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.print();
-                } catch (err) {
-                    console.error('Print failed:', err);
-                    alert('Could not open the print dialog. Please try again.');
-                } finally {
-                    setTimeout(() => {
-                        URL.revokeObjectURL(url);
-                        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-                    }, 1500);
-                }
-            }, 300);
+        const iframe = document.createElement('iframe');
+        Object.assign(iframe.style, {
+            position: 'fixed', right: '0', bottom: '0',
+            width: '0', height: '0', border: '0', visibility: 'hidden'
         });
-    };
-    iframe.src = url;
+        document.body.appendChild(iframe);
+
+        const blob = new Blob([fullHtml], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+
+        let finished = false;
+        const finish = () => {
+            if (finished) return;
+            finished = true;
+            URL.revokeObjectURL(url);
+            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+            resolve();
+        };
+
+        iframe.onload = () => {
+            const doc = iframe.contentWindow.document;
+            const imgs = Array.from(doc.querySelectorAll('img'));
+
+            Promise.all(imgs.map(img =>
+                img.complete ? Promise.resolve()
+                    : new Promise(res => { img.onload = img.onerror = res; })
+            )).then(() => {
+                setTimeout(() => {
+                    try {
+                        // afterprint fires in Chrome / Edge / Firefox once the dialog closes
+                        iframe.contentWindow.addEventListener('afterprint', finish);
+                        // Safety net: if afterprint never fires (older Safari), resolve anyway
+                        setTimeout(finish, 60000);
+
+                        iframe.contentWindow.focus();
+                        iframe.contentWindow.print();
+                    } catch (err) {
+                        console.error('Print failed:', err);
+                        alert('Could not open the print dialog. Please try again.');
+                        finish();
+                    }
+                }, 300);
+            });
+        };
+
+        iframe.src = url;
+    });
 }
 
 // =====================================================================
@@ -571,6 +588,34 @@ function exportToWord(htmlContent, filename) {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+}
+
+// =====================================================================
+//  Init: Reset input form after generate pdf file
+// =====================================================================
+
+function resetFormAndPreview(form) {
+    if (!form) return;
+
+    // 1. Reset every normal input, select, textarea, and radio to its default
+    form.reset();
+
+    // 2. Clear any file inputs
+    form.querySelectorAll('input[type="file"]').forEach(input => {
+        input.value = '';
+    });
+
+    // 3. Hide the image preview and drop the cached base64
+    const previewImg = form.querySelector('img[id$="-preview"]');
+    if (previewImg) {
+        previewImg.src = '';
+        previewImg.style.display = 'none';
+        delete previewImg.dataset.savedBase64;
+    }
+
+    // 4. Clear the hidden record-id so the next Save creates a new record
+    const hiddenId = form.querySelector('input[type="hidden"][id$="-record-id"]');
+    if (hiddenId) hiddenId.value = '';
 }
 
 // =====================================================================

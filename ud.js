@@ -87,7 +87,7 @@ document.getElementById('ud-form').addEventListener('submit', async function (e)
     const idInput = document.getElementById('ud-record-id');
     if (!idInput.value) idInput.value = generateId();
 
-   await saveFileRecord({
+    await saveFileRecord({
         id: idInput.value,
         type: 'ud',
         title: `${data.ps || 'UD'} Case No-${data.caseNo || 'Unknown'}`,
@@ -103,8 +103,12 @@ document.getElementById('ud-form').addEventListener('submit', async function (e)
     const pageBreak = `<div style="page-break-before: always; clear: both;"></div>`;
     const combinedHtml = page1 + pageBreak + page2;
 
-    exportToPdf(combinedHtml, `${data.ps} UD Case ${(data.caseNo || '').replace(/\//g, '-')}`);
+    await exportToPdf(combinedHtml, `${data.ps} UD Case ${(data.caseNo || '').replace(/\//g, '-')}`);
+
+    // Print dialog closed → start fresh for the next case
+    resetFormAndPreview(document.getElementById('ud-form'));
 });
+
 
 // UD Format 1: Director of Information
 function generateUdTemplate1(data, imgBase64) {
