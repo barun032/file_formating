@@ -313,9 +313,9 @@ function generateTemplate4(data, imgBase64) {
                 <tr>
                     <td width="8%" valign="top">To:</td>
                     <td width="92%" style="text-align: justify;">
-                        DGSP of all States / UTs-w- DIGsP, CID of All States & UTs-w- CP, Kolkata Police -w-<br>
-                        ALL CSP/SSP of West Bengal / All O/Cs of West Bengal-w- All OCs of Kolkata Police -w-<br>
-                        All OCs of GRPSS/SCRB, West Bengal / PD, West Bengal.
+                        DGsP of all States / UTs-w- DIGsP, CID of All States & UTs-w- CP, Kolkata Police -w-<br>
+                        ALL CsP/SsP of West Bengal / All O/Cs of West Bengal-w- All OCs of Kolkata Police -w-<br>
+                        All OCs of GRPSs/SCRB, West Bengal / PD, West Bengal.
                     </td>
                 </tr>
                 <tr><td valign="top">From:</td><td>Crime West Bengal.</td></tr>
